@@ -237,4 +237,48 @@ void Simulador2D<T>::imprimirGrid() const
     }
 }
 
+// * simularPaso (algoritmo de difusión)
+template <typename T>
+void Simulador2D<T>::simularPaso()
+{
+    if (_filas <= 0 || _columnas <= 0)
+        return;
+
+    // crear matriz temporal
+    T **temp = new T *[_filas];
+    for (int i = 0; i < _filas; ++i)
+    {
+        temp[i] = new T[_columnas];
+        for (int j = 0; j < _columnas; ++j)
+        {
+            temp[i][j] = _grid[i][j];
+        }
+    }
+
+    // aplicar difusión a celdas internas (promedio de 4 vecinos)
+    for (int i = 1; i < _filas - 1; ++i)
+    {
+        for (int j = 1; j < _columnas - 1; ++j)
+        {
+            temp[i][j] = (_grid[i - 1][j] + _grid[i + 1][j] + _grid[i][j - 1] + _grid[i][j + 1]) / T(4);
+        }
+    }
+
+    // copiar temp a grid
+    for (int i = 0; i < _filas; ++i)
+    {
+        for (int j = 0; j < _columnas; ++j)
+        {
+            _grid[i][j] = temp[i][j];
+        }
+    }
+
+    // liberar temporal
+    for (int i = 0; i < _filas; ++i)
+    {
+        delete[] temp[i];
+    }
+    delete[] temp;
+}
+
 #endif
