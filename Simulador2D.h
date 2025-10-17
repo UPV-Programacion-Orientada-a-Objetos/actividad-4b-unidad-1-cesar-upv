@@ -34,11 +34,13 @@ Simulador2D<T>::Simulador2D(int f, int c) : _grid(nullptr), _filas(f), _columnas
                                             _fuentes(nullptr), _numFuentes(0), _capacidadFuentes(0),
                                             _constantes{1.0f, 1.0f, 1.0f} // valores por defecto: dif=1, dx=1, dt=1
 {
-    if (_filas < 0) {
+    if (_filas < 0)
+    {
         _filas = 0;
     }
-        
-    if (_columnas < 0) {
+
+    if (_columnas < 0)
+    {
         _columnas = 0;
     }
 
@@ -93,6 +95,38 @@ Simulador2D<T>::~Simulador2D()
         delete[] _fuentes;
         _fuentes = nullptr;
     }
+}
+
+// * agregarFuente (expansión manual del vector)
+template <typename T>
+void Simulador2D<T>::agregarFuente(T valor)
+{
+    // verificar si se necesita expandir la capacidad
+    if (_numFuentes >= _capacidadFuentes)
+    {
+        // duplicar la capacidad
+        int nuevaCapacidad = _capacidadFuentes * 2;
+
+        // crear nuevo array con mayor capacidad
+        T *nuevoArray = new T[nuevaCapacidad];
+
+        // copiar los datos antiguos al nuevo array
+        for (int i = 0; i < _numFuentes; ++i)
+        {
+            nuevoArray[i] = _fuentes[i];
+        }
+
+        // liberar el array antiguo
+        delete[] _fuentes;
+
+        // actualizar el puntero y la capacidad
+        _fuentes = nuevoArray;
+        _capacidadFuentes = nuevaCapacidad;
+    }
+
+    // agregar el nuevo valor
+    _fuentes[_numFuentes] = valor;
+    _numFuentes++;
 }
 
 #endif
